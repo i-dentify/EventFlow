@@ -101,6 +101,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventFlow.PostgreSql.Autofa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventFlow.PostgreSql.DependencyInjection.Tests", "Source\EventFlow.PostgreSql.DependencyInjection.Tests\EventFlow.PostgreSql.DependencyInjection.Tests.csproj", "{54AB1337-5A44-4DA8-8F40-9BCC4EE5C2BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventFlow.SQLite.Autofac.Tests", "Source\EventFlow.SQLite.Autofac.Tests\EventFlow.SQLite.Autofac.Tests.csproj", "{11D4E0F2-193C-4F3D-8D8F-9FE52012E721}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -243,6 +245,10 @@ Global
 		{54AB1337-5A44-4DA8-8F40-9BCC4EE5C2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54AB1337-5A44-4DA8-8F40-9BCC4EE5C2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54AB1337-5A44-4DA8-8F40-9BCC4EE5C2BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11D4E0F2-193C-4F3D-8D8F-9FE52012E721}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11D4E0F2-193C-4F3D-8D8F-9FE52012E721}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11D4E0F2-193C-4F3D-8D8F-9FE52012E721}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11D4E0F2-193C-4F3D-8D8F-9FE52012E721}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -282,6 +288,7 @@ Global
 		{5B2706DA-B66C-4CD9-8441-8C9BDACB8348} = {92F3C263-8C0C-4D12-B41A-452E48D2E5E8}
 		{35B31297-F59D-4CBF-B373-95548C2E5FF2} = {5B2706DA-B66C-4CD9-8441-8C9BDACB8348}
 		{54AB1337-5A44-4DA8-8F40-9BCC4EE5C2BD} = {5B2706DA-B66C-4CD9-8441-8C9BDACB8348}
+		{11D4E0F2-193C-4F3D-8D8F-9FE52012E721} = {2A71452E-15DD-4EBA-A7A1-8CC3D298097D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17607E2C-4E8E-45A2-85BD-0A5808E1C0F3}
