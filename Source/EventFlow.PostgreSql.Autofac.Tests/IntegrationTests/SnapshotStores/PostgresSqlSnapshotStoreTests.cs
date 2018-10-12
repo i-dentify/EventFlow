@@ -20,6 +20,8 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Autofac;
+using EventFlow.Autofac.Extensions;
 using EventFlow.Configuration;
 using EventFlow.Extensions;
 using EventFlow.PostgreSql.Autofac.Tests.TestHelpers;
@@ -37,13 +39,20 @@ namespace EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.SnapshotStores
     {
         private IPostgreSqlDatabase _testDatabase;
 
+        protected override IEventFlowOptions Options(IEventFlowOptions eventFlowOptions)
+        {
+            _testDatabase = PostgreSqlHelpz.CreateDatabase("eventflow");
+
+            var builder = new ContainerBuilder();
+            return base.Options(eventFlowOptions
+                    .UseAutofacContainerBuilder(builder))
+                .ConfigurePostgreSql(PostgreSqlConfiguration.New.SetConnectionString(_testDatabase.ConnectionString.Value))
+                .UsePostgreSqlSnapshotStore();
+        }
+
         protected override IRootResolver CreateRootResolver(IEventFlowOptions eventFlowOptions)
         {
-            _testDatabase = PostgreSqlHelpz.CreateDatabase("eventflow-snapshots");
-
             var resolver = eventFlowOptions
-                .ConfigurePostgreSql(PostgreSqlConfiguration.New.SetConnectionString(_testDatabase.ConnectionString.Value))
-                .UsePostgreSqlSnapshotStore()
                 .CreateResolver();
 
             var databaseMigrator = resolver.Resolve<IPostgreSqlDatabaseMigrator>();
