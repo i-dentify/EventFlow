@@ -21,22 +21,22 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac;
-using EventFlow.Autofac.Extensions;
 using EventFlow.Configuration;
+using EventFlow.DependencyInjection.Extensions;
 using EventFlow.Extensions;
-using EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.ReadStores.QueryHandlers;
-using EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.ReadStores.ReadModels;
-using EventFlow.PostgreSql.Autofac.Tests.TestHelpers;
 using EventFlow.PostgreSql.Connections;
+using EventFlow.PostgreSql.DependencyInjection.Tests.IntegrationTests.ReadStores.QueryHandlers;
+using EventFlow.PostgreSql.DependencyInjection.Tests.IntegrationTests.ReadStores.ReadModels;
+using EventFlow.PostgreSql.DependencyInjection.Tests.TestHelpers;
 using EventFlow.PostgreSql.EventStores;
 using EventFlow.PostgreSql.Extensions;
 using EventFlow.TestHelpers;
 using EventFlow.TestHelpers.Aggregates.Entities;
 using EventFlow.TestHelpers.Suites;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
-namespace EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.ReadStores
+namespace EventFlow.PostgreSql.DependencyInjection.Tests.IntegrationTests.ReadStores
 {
     [Category(Categories.Integration)]
     public class PostgreSqlReadModelStoreTests : TestSuiteForReadModelStore
@@ -47,11 +47,10 @@ namespace EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.ReadStores
 
         protected override IEventFlowOptions Options(IEventFlowOptions eventFlowOptions)
         {
+            var serviceCollection = new ServiceCollection();
             _testDatabase = PostgreSqlHelpz.CreateDatabase("eventflow");
-
-            var builder = new ContainerBuilder();
             return base.Options(eventFlowOptions
-                .UseAutofacContainerBuilder(builder))
+                .UseServiceCollection(serviceCollection))
                 .RegisterServices(sr => sr.RegisterType(typeof(ThingyMessageLocator)))
                 .ConfigurePostgreSql(PostgreSqlConfiguration.New.SetConnectionString(_testDatabase.ConnectionString.Value))
                 .UsePostgreSqlReadModel<PostgreSqlThingyReadModel>()

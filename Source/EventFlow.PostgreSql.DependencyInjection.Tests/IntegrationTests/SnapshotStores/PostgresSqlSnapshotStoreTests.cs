@@ -20,46 +20,33 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using Autofac;
-using EventFlow.Autofac.Extensions;
 using EventFlow.Configuration;
+using EventFlow.DependencyInjection.Extensions;
 using EventFlow.Extensions;
-using EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.ReadStores.QueryHandlers;
-using EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.ReadStores.ReadModels;
-using EventFlow.PostgreSql.Autofac.Tests.TestHelpers;
 using EventFlow.PostgreSql.Connections;
-using EventFlow.PostgreSql.EventStores;
+using EventFlow.PostgreSql.DependencyInjection.Tests.TestHelpers;
 using EventFlow.PostgreSql.Extensions;
+using EventFlow.PostgreSql.SnapshotStores;
 using EventFlow.TestHelpers;
-using EventFlow.TestHelpers.Aggregates.Entities;
 using EventFlow.TestHelpers.Suites;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
-namespace EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.ReadStores
+namespace EventFlow.PostgreSql.DependencyInjection.Tests.IntegrationTests.SnapshotStores
 {
     [Category(Categories.Integration)]
-    public class PostgreSqlReadModelStoreTests : TestSuiteForReadModelStore
+    public class PostgreSqlSnapshotStoreTests : TestSuiteForSnapshotStore
     {
-        protected override Type ReadModelType { get; } = typeof(PostgreSqlThingyReadModel);
-
         private IPostgreSqlDatabase _testDatabase;
 
         protected override IEventFlowOptions Options(IEventFlowOptions eventFlowOptions)
         {
+            var serviceCollection = new ServiceCollection();
             _testDatabase = PostgreSqlHelpz.CreateDatabase("eventflow");
-
-            var builder = new ContainerBuilder();
             return base.Options(eventFlowOptions
-                .UseAutofacContainerBuilder(builder))
-                .RegisterServices(sr => sr.RegisterType(typeof(ThingyMessageLocator)))
+                    .UseServiceCollection(serviceCollection))
                 .ConfigurePostgreSql(PostgreSqlConfiguration.New.SetConnectionString(_testDatabase.ConnectionString.Value))
-                .UsePostgreSqlReadModel<PostgreSqlThingyReadModel>()
-                .UsePostgreSqlReadModel<PostgreSqlThingyMessageReadModel, ThingyMessageLocator>()
-                .AddQueryHandlers(
-                    typeof(PostgreSqlThingyGetQueryHandler),
-                    typeof(PostgreSqlThingyGetVersionQueryHandler),
-                    typeof(PostgreSqlThingyGetMessagesQueryHandler));
+                .UsePostgreSqlSnapshotStore();
         }
 
         protected override IRootResolver CreateRootResolver(IEventFlowOptions eventFlowOptions)
@@ -68,8 +55,7 @@ namespace EventFlow.PostgreSql.Autofac.Tests.IntegrationTests.ReadStores
                 .CreateResolver();
 
             var databaseMigrator = resolver.Resolve<IPostgreSqlDatabaseMigrator>();
-            EventFlowEventStoresPostgreSql.MigrateDatabase(databaseMigrator);
-            databaseMigrator.MigrateDatabaseUsingEmbeddedScripts(GetType().Assembly);
+            EventFlowSnapshotStoresPostgreSql.MigrateDatabase(databaseMigrator);
 
             return resolver;
         }
